@@ -3,10 +3,10 @@ load("@rules_java//java:defs.bzl", "java_library")
 DEFAULT_LOMBOK_JAR="@lombok_jar//jar"
 DEFAULT_TOOLCHAIN="@bazel_tools//tools/jdk:current_java_runtime"
 
-def lombok_java_library(name, srcs, classpath=[], lombok_jar=DEFAULT_LOMBOK_JAR, toolchain=DEFAULT_TOOLCHAIN, debug=False):
+def lombok_java_library(name, srcs, deps=[], lombok_jar=DEFAULT_LOMBOK_JAR, toolchain=DEFAULT_TOOLCHAIN, debug=False):
     line = "$(JAVA) -jar $(location " + lombok_jar +") delombok $(SRCS)"
-    if classpath:
-        classpath_cmd=":".join(["$(location " + x + ")" for x in classpath])
+    if deps:
+        classpath_cmd=":".join(["$(location " + x + ")" for x in deps])
         line = line + " --classpath=" + classpath_cmd
     cmd = []
     if debug:
@@ -17,12 +17,14 @@ def lombok_java_library(name, srcs, classpath=[], lombok_jar=DEFAULT_LOMBOK_JAR,
         "$(JAVABASE)/bin/jar --create --file $(OUTS) $$TMP",
         "rm -rf $$TMP"
     ])
+    if lombok_jar not in deps:
+        deps = [lombok_jar] + deps
     native.genrule(
         name = name,
         srcs = srcs,
         outs = [ name + ".srcjar" ],
         cmd = " && ".join(cmd),
-        tools = [ lombok_jar ] + classpath,
+        tools = deps,
         toolchains = [ toolchain ],
         message = "Applying delombok to generate " + name
     )

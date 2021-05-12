@@ -4,10 +4,11 @@ load("//:rules.bzl", "lombok_java_library")
 lombok_java_library(
     name = "lombok_java_library",
     srcs = ["LombokExample.java"],
-    classpath = [
+    deps = [
         "@maven//:org_projectlombok_lombok",
         "@maven//:org_slf4j_slf4j_api"
-    ]
+    ],
+    lombok_jar = "@maven//:org_projectlombok_lombok"
 )
 
 java_library(
