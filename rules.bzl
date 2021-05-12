@@ -4,7 +4,7 @@ DEFAULT_LOMBOK_JAR="@lombok_jar//jar"
 DEFAULT_TOOLCHAIN="@bazel_tools//tools/jdk:current_java_runtime"
 
 def lombok_java_library(name, srcs, deps=[], lombok_jar=DEFAULT_LOMBOK_JAR, toolchain=DEFAULT_TOOLCHAIN, debug=False):
-    line = "$(JAVA) -jar $(location " + lombok_jar +") delombok $(SRCS)"
+    line = "$(JAVA) -Dfile.encoding=UTF8 -jar $(location " + lombok_jar +") delombok $(SRCS)"
     if deps:
         classpath_cmd=":".join(["$(location " + x + ")" for x in deps])
         line = line + " --classpath=" + classpath_cmd
