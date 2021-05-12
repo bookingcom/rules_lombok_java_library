@@ -11,6 +11,9 @@ java_library(
 java_binary(
     name = "runner",
     main_class = "com.example.ProjectRunner",
-    runtime_deps = [":lombok_external_user_example"],
+    runtime_deps = [
+        ":lombok_external_user_example",
+        "@maven//:org_slf4j_slf4j_simple",
+    ],
     visibility = ["//visibility:public"]
 )

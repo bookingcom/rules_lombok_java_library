@@ -4,16 +4,17 @@ load("//:rules.bzl", "lombok_java_library")
 lombok_java_library(
     name = "lombok_java_library",
     srcs = ["LombokExample.java"],
+    classpath = [
+        "@maven//:org_projectlombok_lombok",
+        "@maven//:org_slf4j_slf4j_api"
+    ]
 )
 
 java_library(
     name = "lombok_example",
-    srcs = [":lombok_java_library"] + ["Runner.java"],
-    visibility = ["//visibility:public"]
-)
-
-java_binary(
-    name = "runner",
-    main_class = "com.example.cmdline.Runner",
-    runtime_deps = [":lombok_example"],
+    srcs = [":lombok_java_library"],
+    deps = [
+        "@maven//:org_slf4j_slf4j_api"
+    ],
+    visibility = ["//visibility:public"],
 )

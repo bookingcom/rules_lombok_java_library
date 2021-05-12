@@ -41,7 +41,7 @@ java_library(
 ```
     $ git clone https://github.com/bookingcom/rules_lombok_java_library
     $ cd rules_lombok_java_library
-    $ run //example/src/main/java/com/example:runner
+    $ bazel run //example/src/main/java/com/example:runner
     ....
     INFO: Build completed successfully, 1 total action
     Hi!
