@@ -22,7 +22,8 @@ def lombok_java_library(name, srcs, deps = [], lombok_jar = DEFAULT_LOMBOK_JAR, 
     if debug:
         cmd.extend(["pwd", "set -x"])
 
-    cmd.append("TMP=$$(mktemp -d -p . || mktemp -d -t bazel-tmp -p .)")
+    cmd.append("TMPDIR=.")
+    cmd.append("TMP=$$(mktemp -d)")
 
     for path in files:
         files_in_dir = " ".join([("$(location " + path + "/" + x + ")") for x in files[path]])
