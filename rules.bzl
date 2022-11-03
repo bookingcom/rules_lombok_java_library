@@ -22,18 +22,16 @@ def lombok_java_library(name, srcs, deps = [], lombok_jar = DEFAULT_LOMBOK_JAR, 
     if debug:
         cmd.extend(["pwd", "set -x"])
 
-    cmd.append("TMPDIR=.")
-    cmd.append("TMP=$$(mktemp -d)")
+    cmd.append("LOMBOK_OUT=lombok_out")
 
     for path in files:
         files_in_dir = " ".join([("$(location " + path + "/" + x + ")") for x in files[path]])
         cmd.extend([
-            "mkdir -p $$TMP/" + path,
-            line + " " + files_in_dir + " -d " + "$$TMP/" + path,
+            line + " " + files_in_dir + " -d " + "$$LOMBOK_OUT/" + path,
         ])
 
     cmd.append(
-        "$(JAVABASE)/bin/jar --create --file $(OUTS) $$TMP",
+        "$(JAVABASE)/bin/jar --create --file $(OUTS) $$LOMBOK_OUT",
     )
 
     if lombok_jar not in deps:
