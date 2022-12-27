@@ -4,7 +4,7 @@ DEFAULT_LOMBOK_JAR = "@lombok_jar//jar"
 DEFAULT_TOOLCHAIN = "@bazel_tools//tools/jdk:current_java_runtime"
 
 def lombok_java_library(name, srcs, deps = [], lombok_jar = DEFAULT_LOMBOK_JAR, toolchain = DEFAULT_TOOLCHAIN, debug = False):
-    line = "$(JAVA) -Dfile.encoding=UTF8 -jar $(location " + lombok_jar + ") delombok "
+    line = "$(JAVA) -Dfile.encoding=UTF8 -jar $(execpath " + lombok_jar + ") delombok "
     files = dict()
 
     for src in srcs:
@@ -14,21 +14,19 @@ def lombok_java_library(name, srcs, deps = [], lombok_jar = DEFAULT_LOMBOK_JAR, 
         files[path].append(file_name)
 
     if deps:
-        classpath_cmd = ":".join(["$(location " + x + ")" for x in deps])
+        classpath_cmd = ":".join(["$(execpath " + x + ")" for x in deps])
         line = line + " --classpath=" + classpath_cmd
 
     cmd = []
 
     if debug:
-        cmd.extend(["pwd", "set -x"])
+        cmd.extend(["set -x", "echo $$PWD"])
 
-    cmd.append("LOMBOK_OUT=lombok_out")
+    cmd.append("LOMBOK_OUT=delomboked")
 
     for path in files:
-        files_in_dir = " ".join([("$(location " + path + "/" + x + ")") for x in files[path]])
-        cmd.extend([
-            line + " " + files_in_dir + " -d " + "$$LOMBOK_OUT/" + path,
-        ])
+        files_in_dir = " ".join([("$(execpath " + path + "/" + x + ")") for x in files[path]])
+        cmd.append(line + " " + files_in_dir + " -d " + "$$LOMBOK_OUT/" + path)
 
     cmd.append(
         "$(JAVABASE)/bin/jar --create --file $(OUTS) $$LOMBOK_OUT",

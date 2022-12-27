@@ -9,6 +9,7 @@ lombok_java_library(
         "@maven//:org_slf4j_slf4j_api"
     ],
     lombok_jar = "@maven//:org_projectlombok_lombok",
+    debug = True,
 )
 
 java_library(
